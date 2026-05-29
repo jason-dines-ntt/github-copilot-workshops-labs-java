@@ -25,7 +25,7 @@ public class EmployeeController {
         return employees;
     }
 
-    @GetMapping("/{identificador}")
+    @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable Long id) {
         logger.info("Entrada: GET /api/employees/{}", id);
         Employee employee = employeeService.getEmployeeById(id);

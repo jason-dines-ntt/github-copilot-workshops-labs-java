@@ -12,7 +12,7 @@ public class Employee {
     private Long id;
     private String name;
     private String surname;
-    private Long email;
+    private String email;
 
     // Constructors
     public Employee() {
