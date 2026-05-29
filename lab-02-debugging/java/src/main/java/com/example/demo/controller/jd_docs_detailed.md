@@ -83,7 +83,7 @@ public List<Employee> getAllEmployees() {
 ### 2. `getEmployeeById()`
 
 ```java
-@GetMapping("/{identificador}")
+@GetMapping("/{id}")
 public Employee getEmployeeById(@PathVariable Long id) {
     logger.info("Entrada: GET /api/employees/{}", id);
     Employee employee = employeeService.getEmployeeById(id);
@@ -101,12 +101,16 @@ public Employee getEmployeeById(@PathVariable Long id) {
 - Returns `null` if no employee is found — ideally should return `404 Not Found` using `ResponseEntity`.
 - No null-check on the returned employee before returning to the client.
 
-#### 🐛 Bug
-- The path variable is named `{identificador}` but the method parameter is named `id` with no `@PathVariable("identificador")` mapping.
-- This will cause a **`MissingPathVariableException`** at runtime.
+#### ✅ Bug Fixed
+- The path variable was named `{identificador}` but the method parameter was named `id` with no `@PathVariable("identificador")` mapping.
+- This caused a **`MissingPathVariableException`** at runtime. Fixed by renaming the path variable to `{id}`.
 
-**Fix:**
 ```java
+// Before (buggy):
+@GetMapping("/{identificador}")
+public Employee getEmployeeById(@PathVariable Long id) {
+
+// After (fixed):
 @GetMapping("/{id}")
 public Employee getEmployeeById(@PathVariable Long id) {
 ```
@@ -280,11 +284,12 @@ public List<Employee> getExternalEmployees() {
 
 ## Summary of Issues & Recommendations
 
-| Issue | Location | Recommendation |
-|---|---|---|
-| 🐛 Path variable mismatch (`{identificador}` vs `id`) | `getEmployeeById` | Rename to `{id}` |
-| ⚠️ Returns `null` instead of `404` | Multiple methods | Use `ResponseEntity<Employee>` |
-| ⚠️ No input validation | `createEmployee`, `updateEmployee` | Add `@Valid` and bean validation annotations |
-| ⚠️ `POST` returns `200 OK` instead of `201 Created` | `createEmployee` | Return `ResponseEntity` with `HttpStatus.CREATED` |
-| ⚠️ PII logged (email addresses) | `getEmployeeByEmail` | Mask or remove email from logs in production |
-| ⚠️ No pagination | `getAllEmployees` | Consider adding `Pageable` support |
+| Issue | Location | Status | Recommendation |
+|---|---|---|---|
+| ~~🐛 Path variable mismatch (`{identificador}` vs `id`)~~ | `getEmployeeById` | ✅ Fixed | Renamed to `{id}` |
+| ~~🐛 Type mismatch (`Long` instead of `String` for `email`)~~ | `Employee.java` | ✅ Fixed | Changed `email` field type to `String` |
+| ⚠️ Returns `null` instead of `404` | Multiple methods | Open | Use `ResponseEntity<Employee>` |
+| ⚠️ No input validation | `createEmployee`, `updateEmployee` | Open | Add `@Valid` and bean validation annotations |
+| ⚠️ `POST` returns `200 OK` instead of `201 Created` | `createEmployee` | Open | Return `ResponseEntity` with `HttpStatus.CREATED` |
+| ⚠️ PII logged (email addresses) | `getEmployeeByEmail` | Open | Mask or remove email from logs in production |
+| ⚠️ No pagination | `getAllEmployees` | Open | Consider adding `Pageable` support |

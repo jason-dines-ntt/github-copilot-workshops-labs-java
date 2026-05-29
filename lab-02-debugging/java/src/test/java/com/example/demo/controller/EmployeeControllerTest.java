@@ -87,9 +87,25 @@ public class EmployeeControllerTest {
         mockMvc.perform(post("/api/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(emp)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())  // changed from isOk()
                 .andExpect(jsonPath("$.name").value("John"))
                 .andExpect(jsonPath("$.surname").value("Doe"));
+    }
+
+    @Test
+    public void testCreateEmployee_Duplicate() throws Exception {
+        Employee emp = new Employee();
+        emp.setId(1L);
+        emp.setName("John");
+        emp.setSurname("Doe");
+        emp.setEmail("john.doe@example.com");
+
+        when(employeeService.findEmployeeByEmail("john.doe@example.com")).thenReturn(emp);
+
+        mockMvc.perform(post("/api/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(emp)))
+                .andExpect(status().isConflict());
     }
 
     @Test

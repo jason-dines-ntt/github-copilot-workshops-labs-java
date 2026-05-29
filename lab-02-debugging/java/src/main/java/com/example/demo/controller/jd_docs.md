@@ -56,9 +56,11 @@ The base URL is `/api/employees`, defined by the `@RequestMapping` annotation on
 }
 ```
 
-## Known Bug
+## Fixed Bugs
 
-In `getEmployeeById`, the path variable is named `{identificador}` but the method parameter uses `@PathVariable Long id`. These names must match, causing a runtime error.
+### 1. Path Variable Mismatch in `getEmployeeById`
+
+In `getEmployeeById`, the path variable was named `{identificador}` but the method parameter used `@PathVariable Long id`. These names must match, causing a `MissingPathVariableException` at runtime.
 
 ```java
 // Bug: path variable name mismatch
@@ -68,6 +70,18 @@ public Employee getEmployeeById(@PathVariable Long id) { ... }
 // Fix:
 @GetMapping("/{id}")
 public Employee getEmployeeById(@PathVariable Long id) { ... }
+```
+
+### 2. Type Mismatch in `Employee.java`
+
+The `email` field was declared as `Long` instead of `String`, causing type errors when handling email values.
+
+```java
+// Bug: wrong type for email field
+private Long email;
+
+// Fix:
+private String email;
 ```
 
 ---

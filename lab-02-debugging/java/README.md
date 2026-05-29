@@ -74,3 +74,49 @@ curl -X GET http://localhost:8080/api/employees
 curl -X GET http://localhost:8080/api/employees/{id}
 ```
 Replace `{id}` with the actual employee ID.
+
+# Testing employee API with PowerShell
+```
+# Get all employees
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees" -Method Get
+
+# Get employee by ID
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees/1" -Method Get
+
+# Get employee by email
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees/email/john.doe@example.com" -Method Get
+
+# Create employee
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees" -Method Post -ContentType "application/json" -Body '{"name":"John","surname":"Doe","email":"john.doe@example.com"}'
+
+# Update employee
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees/1" -Method Put -ContentType "application/json" -Body '{"name":"Johnny","surname":"Doe","email":"johnny.doe@example.com"}'
+
+# Delete employee
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees/1" -Method Delete
+```
+
+```
+# Create first employee
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees" -Method Post -ContentType "application/json" -Body '{"name":"John","surname":"Doe","email":"john.doe@example.com"}'
+
+# Create second employee
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees" -Method Post -ContentType "application/json" -Body '{"name":"Jane","surname":"Smith","email":"jane.smith@example.com"}'
+
+# Now get all employees
+Invoke-RestMethod -Uri "http://localhost:8080/api/employees" -Method Get
+```
+
+
+## Database resources
+`src/main/resources/`
+
+`data.sql`  
+The app uses an H2 in-memory database which starts empty every time.  
+Spring Boot can be configured to run a `data.sql` file which exists in `src/main/resources/`  
+
+`application.properties`  
+`spring.sql.init.mode=always` → runs data.sql on startup  
+`spring.sql.init.mode=never` → skips data.sql on startup  
+
+Spring Boot is currently configured for `always`
